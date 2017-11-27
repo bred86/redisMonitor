@@ -7,21 +7,23 @@ import (
 )
 
 func main() {
+	var cursor uint64
+
 	client := redis.NewClient(&redis.Options{
 		Addr:     "localhost:6379",
 		Password: "",
 		DB:       0,
 	})
 
-	var keys []string
-	var cursor uint64
-	var err error
+	fmt.Println(client.Info("Memory").Val()[3])
 
-	keys, cursor, err = client.Scan(cursor, "", 10).Result()
-	if err != nil {
-		panic(err)
+	keys := client.Scan(cursor, "", 10).Iterator()
+	if keys.Err() != nil {
+		panic(keys.Err())
 	}
 
-	fmt.Println(keys)
-	fmt.Println(cursor)
+	// Print nome da fila e tamanho da fila
+	for keys.Next() {
+		fmt.Println(keys.Val(), client.LLen(keys.Val()))
+	}
 }
