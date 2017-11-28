@@ -10,6 +10,10 @@ type Config struct {
 	FromRedis     *redisType
 	ToRedis       *redisType
 	Elasticsearch *elasticsearchType
+	Team          *string
+	Type          *string
+	Interval      *int
+	Output        *bool
 }
 
 type redisType struct {

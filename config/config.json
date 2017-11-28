@@ -16,5 +16,9 @@
     "addr": "localhost",
     "port": "9200",
     "index": "test"
-  }
+  },
+  "team": "performance",
+  "type": "app",
+  "interval": 10,
+  "output": true
 }

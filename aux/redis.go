@@ -68,7 +68,7 @@ func GetKeyList(client *redis.Client) string {
 
 		for _, value := range keys {
 			if !strings.Contains(buffer.String(), fmt.Sprintf("\"%s\":", value)) {
-				buffer.WriteString(fmt.Sprintf("\"%s\": %d, ", value, client.LLen(value).Val()))
+				buffer.WriteString(fmt.Sprintf("\"%s\":%d,", value, client.LLen(value).Val()))
 			}
 		}
 
@@ -78,4 +78,12 @@ func GetKeyList(client *redis.Client) string {
 	}
 
 	return buffer.String()
+}
+
+// PushToRedis - ()
+func PushToRedis(client *redis.Client, key string, msg string) {
+	result := client.RPush(key, msg)
+	if result.Err() != nil {
+		fmt.Println(result.Err())
+	}
 }
