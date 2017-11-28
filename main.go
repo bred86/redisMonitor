@@ -1,58 +1,34 @@
 package main
 
 import (
-	"bytes"
 	"fmt"
-	"strings"
 
+	"github.com/bred86/redisMonitor/auxRedis"
+	"github.com/bred86/redisMonitor/auxSystem"
 	"github.com/go-redis/redis"
 )
 
 func main() {
-	var cursor uint64
+	var db int
+	var usedMemory int
+	var totalMemory int
 
-	var memoryInfo string
-	var usedMemory string
 	var jsonString string
-
-	var lines []string
-	var keys []string
-
-	var errorScan error
+	var hostname string
+	var addr string
+	var port string
+	var passwd string
+	var localIP string
 
 	var client *redis.Client
 
-	var buffer bytes.Buffer
+	client = auxRedis.ConnRedis(addr, port, passwd, db)
+	usedMemory = auxRedis.GetUsedMemory(client)
+	totalMemory = auxRedis.GetTotalMemory(client)
+	jsonString = auxRedis.GetKeyList(client)
+	hostname = auxSystem.GetHostname()
+	localIP = auxSystem.GetLocalIP()
 
-	client = redis.NewClient(&redis.Options{
-		Addr:     "localhost:6379",
-		Password: "",
-		DB:       0,
-	})
-
-	memoryInfo = client.Info("memory").Val()
-	lines = strings.Split(memoryInfo, "\n")
-	usedMemory = strings.Replace(strings.Split(lines[1], ":")[1], "\n", "", -1)
-
-	for {
-		keys, cursor, errorScan = client.Scan(cursor, "", 10).Result()
-		if errorScan != nil {
-			panic(errorScan)
-		}
-
-		for _, value := range keys {
-			if !strings.Contains(buffer.String(), fmt.Sprintf("\"%s\":", value)) {
-				buffer.WriteString(fmt.Sprintf("\"%s\": %d, ", value, client.LLen(value).Val()))
-			}
-		}
-
-		if cursor == 0 {
-			break
-		}
-	}
-
-	jsonString = buffer.String()
-
-	fmt.Printf("{ %s\"usedMemory\": %s }\n", jsonString, usedMemory)
+	fmt.Printf("{ \"application\": \"redis_monitor\", \"slave_ip\": \"%s\", \"hostname\": \"%s\", %s\"usedMemory\": %d, \"totalMemory\": %d }\n", localIP, hostname, jsonString, usedMemory, totalMemory)
 
 }
