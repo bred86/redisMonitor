@@ -40,13 +40,16 @@ func main() {
 			hostname = aux.GetHostname()
 			localIP = aux.GetLocalIP()
 
-			buffer.WriteString(fmt.Sprintf("{\"date\":\"%s\",", now.Format(time.RFC3339)))
+			buffer.Reset()
+			buffer.WriteString("{")
+			buffer.WriteString(fmt.Sprintf("\"date\":\"%s\",", now.Format(time.RFC3339)))
 			buffer.WriteString("\"application\":\"redis_monitor\",")
 			buffer.WriteString(fmt.Sprintf("\"slave_ip\":\"%s\",", localIP))
 			buffer.WriteString(fmt.Sprintf("\"hostname\":\"%s\",", hostname))
 			buffer.WriteString(fmt.Sprintf("%s", listKeys))
 			buffer.WriteString(fmt.Sprintf("\"usedMemory\":%d,", usedMemory))
-			buffer.WriteString(fmt.Sprintf("\"totalMemory\":%d}", totalMemory))
+			buffer.WriteString(fmt.Sprintf("\"totalMemory\":%d", totalMemory))
+			buffer.WriteString("}")
 
 			fmt.Println(buffer.String())
 		}
