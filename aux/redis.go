@@ -1,4 +1,4 @@
-package auxRedis
+package aux
 
 import (
 	"bytes"

@@ -2,6 +2,7 @@ package main
 
 import (
 	"fmt"
+	"time"
 
 	"github.com/bred86/redisMonitor/auxRedis"
 	"github.com/bred86/redisMonitor/auxSystem"
@@ -23,12 +24,18 @@ func main() {
 	var client *redis.Client
 
 	client = auxRedis.ConnRedis(addr, port, passwd, db)
-	usedMemory = auxRedis.GetUsedMemory(client)
-	totalMemory = auxRedis.GetTotalMemory(client)
-	jsonString = auxRedis.GetKeyList(client)
-	hostname = auxSystem.GetHostname()
-	localIP = auxSystem.GetLocalIP()
 
-	fmt.Printf("{ \"application\": \"redis_monitor\", \"slave_ip\": \"%s\", \"hostname\": \"%s\", %s\"usedMemory\": %d, \"totalMemory\": %d }\n", localIP, hostname, jsonString, usedMemory, totalMemory)
+	for {
+		now := time.Now()
+		_, _, sec := now.Clock()
 
+		if sec == 10 {
+			usedMemory = auxRedis.GetUsedMemory(client)
+			totalMemory = auxRedis.GetTotalMemory(client)
+			jsonString = auxRedis.GetKeyList(client)
+			hostname = auxSystem.GetHostname()
+			localIP = auxSystem.GetLocalIP()
+			fmt.Printf("{ \"application\": \"redis_monitor\", \"slave_ip\": \"%s\", \"hostname\": \"%s\", %s\"usedMemory\": %d, \"totalMemory\": %d }\n", localIP, hostname, jsonString, usedMemory, totalMemory)
+		}
+	}
 }

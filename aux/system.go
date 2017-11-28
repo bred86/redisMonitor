@@ -1,4 +1,4 @@
-package auxSystem
+package aux
 
 import (
 	"net"
