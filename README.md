@@ -33,5 +33,5 @@ docker build -t redismonitr .
 # Run it
 
 ```
-docker run -it --rm redismonitr
+docker run -it --rm --net=host redismonitr
 ```

@@ -75,6 +75,12 @@ func main() {
 				buffer.WriteString(fmt.Sprintf("\"cluster_type\":\"%s\",", *config.Type))
 			}
 
+			if ( config.FromRedis.Name != nil) && (*config.FromRedis.Name != "") {
+				buffer.WriteString(fmt.Sprintf("\"redis_name\":\"%s\",", *config.FromRedis.Name))
+			} else {
+				buffer.WriteString(fmt.Sprintf("\"redis_name\":\"%s_%s\",", localIP, config.FromRedis.Port))
+			}
+
 			buffer.WriteString(fmt.Sprintf("\"usedMemory\":%d,", usedMemory))
 			buffer.WriteString(fmt.Sprintf("\"totalMemory\":%d", totalMemory))
 			buffer.WriteString("}")
