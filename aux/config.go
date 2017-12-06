@@ -17,6 +17,7 @@ type Config struct {
 }
 
 type redisType struct {
+	Name   *string
 	Addr   string
 	Port   string
 	Passwd string
