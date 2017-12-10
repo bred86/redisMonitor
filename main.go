@@ -65,7 +65,7 @@ func main() {
 			buffer.WriteString("\"application\":\"redis_monitor\",")
 			buffer.WriteString(fmt.Sprintf("\"slave_ip\":\"%s\",", localIP))
 			buffer.WriteString(fmt.Sprintf("\"hostname\":\"%s\",", hostname))
-			buffer.WriteString(fmt.Sprintf("%s", listKeys))
+			buffer.WriteString(fmt.Sprintf("%s,", listKeys))
 
 			if config.Team != nil {
 				buffer.WriteString(fmt.Sprintf("\"team\":\"%s\",", *config.Team))
