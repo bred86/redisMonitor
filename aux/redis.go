@@ -56,6 +56,7 @@ func GetTotalMemory(client *redis.Client) int {
 // GetKeyList - (string) Get a list of redis' keys and their length
 func GetKeyList(client *redis.Client) string {
 	var cursor uint64
+	var totalSize int64
 	var keys []string
 	var buffer bytes.Buffer
 	var errorScan error
@@ -69,10 +70,13 @@ func GetKeyList(client *redis.Client) string {
 		for _, value := range keys {
 			if !strings.Contains(buffer.String(), fmt.Sprintf("\"%s\":", value)) {
 				buffer.WriteString(fmt.Sprintf("\"%s\":%d,", value, client.LLen(value).Val()))
+				totalSize += client.LLen(value).Val()
 			}
 		}
 
 		if cursor == 0 {
+			buffer.WriteString(fmt.Sprintf("\"total_size\":%d", totalSize))
+			totalSize = 0
 			break
 		}
 	}
