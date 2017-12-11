@@ -33,8 +33,15 @@ func ConnRedis(addr string, port string, passwd string, db int) *redis.Client {
 
 // GetUsedMemory - (int) Get used memory
 func GetUsedMemory(client *redis.Client) int {
+	var usedMemoryStr string
+
 	lines := getMemory(client)
-	usedMemoryStr := strings.Replace(strings.Split(lines[1], ":")[1], "\r", "", -1)
+	for _, line := range lines {
+		if strings.Contains(line, "used_memory:") {
+			usedMemoryStr = strings.Replace(strings.Split(line, ":")[1], "\r", "", -1)
+		}
+	}
+
 	usedMemoryInt, err := strconv.Atoi(usedMemoryStr)
 	if err != nil {
 		usedMemoryInt = 99999999
@@ -42,10 +49,16 @@ func GetUsedMemory(client *redis.Client) int {
 	return usedMemoryInt
 }
 
-// GetTotalMemory - (int) Get used memory
+// GetTotalMemory - (int) Get total memory
 func GetTotalMemory(client *redis.Client) int {
+	var totalMemoryStr string
+
 	lines := getMemory(client)
-	totalMemoryStr := strings.Replace(strings.Split(lines[16], ":")[1], "\r", "", -1)
+	for _, line := range lines {
+		if strings.Contains(line, "maxmemory:") {
+			totalMemoryStr = strings.Replace(strings.Split(line, ":")[1], "\r", "", -1)
+		}
+	}
 	totalMemoryInt, err := strconv.Atoi(totalMemoryStr)
 	if err != nil {
 		totalMemoryInt = 99999999
