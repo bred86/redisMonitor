@@ -5,7 +5,7 @@ import (
 	"fmt"
 	"time"
 
-	"github.com/bred86/redisMonitor/aux"
+	"github.com/bred86/redisMonitor/dao"
 	"github.com/go-redis/redis"
 )
 
